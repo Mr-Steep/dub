@@ -501,7 +501,7 @@ export default function SpadarHome() {
             playsInline
             preload="auto"
           >
-            <source src="/g.mp4" type="video/webm" />
+            <source src="/g.webm" type="video/webm" />
           </video>
         </div>
 
