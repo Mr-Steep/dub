@@ -113,7 +113,7 @@ export default function SpadarHome() {
             <a className="nav-link" href="#proof">Portfolio</a>
             <a className="nav-link" href="#contact">Contact</a>
           </div>
-          <a className="cta-gold" href="#contact">Request Inquiry</a>
+          <a className="cta-outline cta-nav" href="#contact">Request Inquiry</a>
         </div>
       </nav>
 
@@ -166,17 +166,25 @@ export default function SpadarHome() {
               />
               EST. DMCC FREE ZONE — DUBAI
             </div>
-            <div className="right mono">
-              <span>25.276987°N / 55.296249°E</span>
-              <span>FILE №&nbsp;SPDR-0426</span>
-            </div>
           </div>
 
           <h1 className="display hero-title">
-            <span className="line"><span>Private</span></span>
-            <span className="line"><span>vehicle</span></span>
-            <span className="line"><span className="chrome">Brokerage.</span></span>
+            <span className="line"><span>Any car.</span></span>
+            <span className="line"><span>Any point</span></span>
+            <span className="line"><span className="chrome">of the world.</span></span>
           </h1>
+
+          <p className="hero-sub">
+            Professional Ultra-Luxury logistics. We find and deliver new and rare models
+            where others don&rsquo;t see paths.
+          </p>
+
+          <a className="cta-outline hero-cta" href="#contact">Request a Quote</a>
+        </div>
+
+        <div className="hero-coords mono">
+          <span>25.276987°N / 55.296249°E</span>
+          <span>FILE №&nbsp;SPDR-0426</span>
         </div>
       </header>
 
@@ -187,17 +195,15 @@ export default function SpadarHome() {
             <div className="lhs">
               <div className="eyebrow">02 — Global Coverage</div>
               <h2>
-                Seven hubs.<br />
-                <span className="gold">One file</span> handler.
+                Geography<br />
+                <span className="gold">without borders.</span>
               </h2>
             </div>
             <div className="rhs">
-              Operations dispatched from our Dubai desk and routed through bonded partners in{" "}
-              <strong style={{ color: "var(--ink)" }}>
-                London, New York, Tokyo, Monaco, Singapore, Sydney and Miami
-              </strong>
-              . Air-freighted in climate-sealed containers. Tarmac handover by white-glove
-              transport — no dealership, no showroom.
+              <strong style={{ color: "var(--ink)" }}>Your location is not a limitation.</strong>{" "}
+              We operate on five continents, using dedicated air and sea corridors. Dispatch
+              from our Dubai desk, tarmac handover by white-glove transport — no dealership,
+              no showroom.
             </div>
           </div>
 
@@ -215,87 +221,138 @@ export default function SpadarHome() {
             </div>
 
             <svg className="map-svg" viewBox="0 0 1200 540" preserveAspectRatio="xMidYMid meet">
-              <g className="grid-bg">
-                <line x1="0" y1="90" x2="1200" y2="90" />
-                <line x1="0" y1="180" x2="1200" y2="180" />
-                <line x1="0" y1="270" x2="1200" y2="270" />
-                <line x1="0" y1="360" x2="1200" y2="360" />
-                <line x1="0" y1="450" x2="1200" y2="450" />
-                <line x1="150" y1="0" x2="150" y2="540" />
-                <line x1="300" y1="0" x2="300" y2="540" />
-                <line x1="450" y1="0" x2="450" y2="540" />
-                <line x1="600" y1="0" x2="600" y2="540" />
-                <line x1="750" y1="0" x2="750" y2="540" />
-                <line x1="900" y1="0" x2="900" y2="540" />
-                <line x1="1050" y1="0" x2="1050" y2="540" />
+              <defs>
+                <pattern id="mapDotGrid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="1" cy="1" r="0.65" fill="rgba(201,169,97,.12)" />
+                </pattern>
+                <radialGradient id="mapVignette" cx="50%" cy="50%" r="65%">
+                  <stop offset="55%" stopColor="rgba(0,0,0,0)" />
+                  <stop offset="100%" stopColor="rgba(4,4,10,.65)" />
+                </radialGradient>
+                <filter id="routeGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.2" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="worldGoldTint" x="0%" y="0%" width="100%" height="100%">
+                  <feFlood floodColor="#C9A961" floodOpacity="0.32" result="tint" />
+                  <feComposite in="tint" in2="SourceAlpha" operator="in" />
+                </filter>
+              </defs>
+
+              {/* Dot-grid scan background */}
+              <rect width="1200" height="540" fill="url(#mapDotGrid)" />
+
+              {/* Vecteezy world map (licensed). Cropped to content bounds (1433×709)
+                  to remove whitespace padding. Rendered at scale 0.82 + translate(12,-15)
+                  so the map fills the viewBox properly. City pins were placed by
+                  programmatic land-detection sampling of this exact PNG. */}
+              <g transform="translate(12 -15) scale(0.82)" filter="url(#worldGoldTint)">
+                <image href="/world-map-cropped.png" width="1433" height="709" preserveAspectRatio="xMidYMid meet" />
               </g>
 
+              {/* Equator */}
               <line
                 x1="0"
                 y1="290"
                 x2="1200"
                 y2="290"
-                stroke="rgba(201,169,97,.18)"
+                stroke="rgba(201,169,97,.22)"
                 strokeWidth=".6"
                 strokeDasharray="2 6"
               />
 
-              <path className="continent" d="M180,140 L290,120 L360,160 L380,220 L320,260 L250,250 L200,210 Z" />
-              <path className="continent" d="M260,210 L330,260 L320,330 L280,360 L240,330 L230,270 Z" />
-              <path className="continent" d="M460,130 L580,120 L640,160 L680,210 L600,220 L520,200 Z" />
-              <path className="continent" d="M540,210 L640,220 L660,290 L590,300 L540,260 Z" />
-              <path className="continent" d="M620,300 L660,330 L650,380 L600,400 L580,360 Z" />
-              <path className="continent" d="M680,170 L820,160 L900,210 L870,280 L760,270 L700,220 Z" />
-              <path className="continent" d="M830,180 L900,170 L940,210 L900,250 L850,230 Z" />
-              <path className="continent" d="M940,360 L1010,370 L1030,430 L970,440 L940,400 Z" />
+              {/* Range rings — centered on Dubai */}
+              <g className="range-rings" transform="translate(720 280)">
+                <circle r="120" />
+                <circle r="220" />
+                <circle r="340" />
+                <circle r="480" />
+              </g>
 
-              <path className="route" d="M720,260 Q620,150 540,170" />
-              <path className="route" d="M720,260 Q500,160 280,220" />
-              <path className="route" d="M720,260 Q860,160 1010,230" />
-              <path className="route" d="M720,260 Q640,180 560,200" />
-              <path className="route" d="M720,260 Q840,320 940,350" />
-              <path className="route" d="M720,260 Q900,380 1050,430" />
-              <path className="route" d="M720,260 Q500,210 310,270" />
+              {/* Routes from Dubai (720, 280) — coords auto-derived from PNG land-sampling */}
+              <g filter="url(#routeGlow)">
+                <path className="route" d="M720,280 Q630,200 540,166" />
+                <path className="route" d="M720,280 Q450,200 270,230" />
+                <path className="route" d="M720,280 Q880,230 1010,236" />
+                <path className="route" d="M720,280 Q640,230 580,200" />
+                <path className="route" d="M720,280 Q840,360 985,400" />
+                <path className="route" d="M720,280 Q900,420 1055,470" />
+                <path className="route" d="M720,280 Q450,290 280,310" />
+              </g>
 
-              <circle className="hub-ring" cx="720" cy="260" r="3" />
-              <circle className="hub-dot" cx="720" cy="260" r="4" />
-              <text
-                x="732"
-                y="252"
-                className="city-label"
-                style={{ fill: "#fff", letterSpacing: ".2em", fontWeight: 600 }}
-              >
-                DUBAI · HQ
-              </text>
+              {/* Vignette overlay */}
+              <rect width="1200" height="540" fill="url(#mapVignette)" pointerEvents="none" />
 
+              {/* City pins — auto-placed via land-density sampling of the PNG */}
               <g>
-                <circle className="city-pulse" cx="540" cy="170" r="3" />
-                <circle className="city-dot" cx="540" cy="170" r="3" />
-                <text x="550" y="165" className="city-label">London</text>
+                <g className="city" transform="translate(540 166)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="11" y="-5" className="city-label">London</text>
+                </g>
 
-                <circle className="city-pulse" cx="280" cy="220" r="3" />
-                <circle className="city-dot" cx="280" cy="220" r="3" />
-                <text x="290" y="215" className="city-label">New York</text>
+                <g className="city" transform="translate(270 230)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="11" y="-5" className="city-label">New York</text>
+                </g>
 
-                <circle className="city-pulse" cx="1010" cy="230" r="3" />
-                <circle className="city-dot" cx="1010" cy="230" r="3" />
-                <text x="1020" y="225" className="city-label">Tokyo</text>
+                <g className="city" transform="translate(1010 236)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="-50" y="-5" className="city-label">Tokyo</text>
+                </g>
 
-                <circle className="city-pulse" cx="560" cy="200" r="3" />
-                <circle className="city-dot" cx="560" cy="200" r="3" />
-                <text x="500" y="216" className="city-label">Monaco</text>
+                <g className="city" transform="translate(580 200)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="11" y="-5" className="city-label">Monaco</text>
+                </g>
 
-                <circle className="city-pulse" cx="940" cy="350" r="3" />
-                <circle className="city-dot" cx="940" cy="350" r="3" />
-                <text x="950" y="346" className="city-label">Singapore</text>
+                <g className="city" transform="translate(985 400)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="11" y="-5" className="city-label">Singapore</text>
+                </g>
 
-                <circle className="city-pulse" cx="1050" cy="430" r="3" />
-                <circle className="city-dot" cx="1050" cy="430" r="3" />
-                <text x="1060" y="426" className="city-label">Sydney</text>
+                <g className="city" transform="translate(1055 470)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="-44" y="-10" className="city-label">Sydney</text>
+                </g>
 
-                <circle className="city-pulse" cx="310" cy="270" r="3" />
-                <circle className="city-dot" cx="310" cy="270" r="3" />
-                <text x="320" y="265" className="city-label">Miami</text>
+                <g className="city" transform="translate(280 310)">
+                  <circle className="city-pulse" r="3" />
+                  <circle className="city-ring" r="6" />
+                  <circle className="city-dot" r="2.4" />
+                  <text x="11" y="-5" className="city-label">Miami</text>
+                </g>
+              </g>
+
+              {/* Dubai HQ hub — over Arabian Peninsula */}
+              <g className="hub" transform="translate(720 280)">
+                <circle className="hub-ring-outer" r="14" />
+                <circle className="hub-ring" r="3" />
+                <circle className="hub-dot" r="4.5" />
+                <line className="hub-tick" x1="0" y1="-18" x2="0" y2="-22" />
+                <line className="hub-tick" x1="0" y1="18" x2="0" y2="22" />
+                <line className="hub-tick" x1="-18" y1="0" x2="-22" y2="0" />
+                <line className="hub-tick" x1="18" y1="0" x2="22" y2="0" />
+                <text className="hub-label" x="20" y="-12">
+                  Dubai · HQ
+                </text>
+                <text className="hub-sublabel" x="20" y="2">
+                  25.27°N / 55.30°E
+                </text>
               </g>
             </svg>
           </div>
@@ -370,13 +427,12 @@ export default function SpadarHome() {
               </svg>
               <h3>Direct<br />Sourcing</h3>
               <p>
-                Allocation slots negotiated directly with the marque&rsquo;s private office. We
-                bypass dealership queues for hypercar tranches, armored saloons and one-off
-                coachbuilt commissions.
+                Direct buyout from dealers and distributors worldwide — including models
+                from closed waitlists and unannounced allocations.
               </p>
               <ul>
-                <li>Factory allocation pull</li>
-                <li>Private-office liaison</li>
+                <li>Worldwide dealer network</li>
+                <li>Closed-waitlist access</li>
                 <li>Pre-production reservation</li>
                 <li>Spec book co-authoring</li>
               </ul>
@@ -393,14 +449,13 @@ export default function SpadarHome() {
               </svg>
               <h3>Secure<br />Transit</h3>
               <p>
-                Climate-sealed containers, GPS-blackout escort, and tarmac-to-tarmac handover
-                via private freight partners. Vehicle status visible only to two parties — the
-                principal and the handler.
+                Transport in armored or fully enclosed car carriers. 24/7 GPS monitoring,
+                bonded staging, tarmac-to-tarmac handover.
               </p>
               <ul>
+                <li>Armored / enclosed carriers</li>
+                <li>24/7 GPS monitoring</li>
                 <li>Bonded warehouse staging</li>
-                <li>Private freight charter</li>
-                <li>Armed escort optional</li>
                 <li>Insurance up to €40M</li>
               </ul>
             </article>
@@ -413,14 +468,14 @@ export default function SpadarHome() {
               </svg>
               <h3>Full<br />Compliance</h3>
               <p>
-                End-to-end paperwork — KYC, AML, beneficial ownership, customs, homologation
-                and re-registration in destination jurisdiction. DMCC-licensed; audited annually.
+                Legal support, customs clearance and registration. You get the keys —
+                we handle everything else.
               </p>
               <ul>
                 <li>DMCC Free Zone licensed</li>
+                <li>Customs &amp; homologation</li>
+                <li>Registration concierge</li>
                 <li>AML / KYC framework</li>
-                <li>Homologation in 62 markets</li>
-                <li>Re-registration concierge</li>
               </ul>
             </article>
           </div>
@@ -538,17 +593,8 @@ export default function SpadarHome() {
               </div>
 
               <button
-                className="submit"
+                className={`cta-outline cta-submit${submittedRef ? " is-filed" : ""}`}
                 type="submit"
-                style={
-                  submittedRef
-                    ? {
-                        background: "linear-gradient(180deg,#0E0E18,#04040A)",
-                        color: "var(--gold)",
-                        borderColor: "var(--gold)",
-                      }
-                    : undefined
-                }
               >
                 {submittedRef ? `✓ Filed — ${submittedRef}` : "Submit Inquiry"}
               </button>
