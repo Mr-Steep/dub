@@ -656,7 +656,7 @@ section { position: relative; }
 /* ---------- VISUAL PROOF ---------- */
 .proof {
   position: relative;
-  min-height: 100vh;
+  min-height: 70vh;
   display: flex;
   align-items: center;
   background: #03030A;
@@ -680,11 +680,11 @@ section { position: relative; }
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(3, 3, 10, .75) 0%, rgba(3, 3, 10, .35) 30%, rgba(3, 3, 10, 0) 55%, rgba(3, 3, 10, .3) 100%),
-    linear-gradient(180deg, rgba(3, 3, 10, .35) 0%, transparent 25%, transparent 75%, rgba(3, 3, 10, .55) 100%);
+    linear-gradient(90deg, rgba(3, 3, 10, .85) 0%, rgba(3, 3, 10, .55) 30%, rgba(3, 3, 10, .35) 55%, rgba(3, 3, 10, .5) 100%),
+    linear-gradient(180deg, rgba(3, 3, 10, .5) 0%, rgba(3, 3, 10, .3) 50%, rgba(3, 3, 10, .65) 100%);
   pointer-events: none;
 }
-.proof-inner { position: relative; z-index: 2; width: 100%; padding: 160px 0; }
+.proof-inner { position: relative; z-index: 2; width: 100%; padding: 110px 0; }
 .proof-meta {
   display: flex;
   justify-content: space-between;
@@ -826,10 +826,77 @@ section { position: relative; }
 }
 .field input::placeholder { color: var(--muted-2); }
 
-.phone-row {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 12px;
+/* react-phone-number-input dark-theme override */
+.phone-input {
+  --PhoneInputCountryFlag-height: 1.1em;
+  --PhoneInputCountryFlag-borderColor: rgba(255, 255, 255, .14);
+  --PhoneInputCountrySelectArrow-color: var(--ink-2);
+  --PhoneInputCountrySelectArrow-opacity: .8;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: #020207;
+  border: 1px solid var(--line-2);
+  transition: border-color .2s, background .2s;
+}
+.phone-input:focus-within {
+  border-color: var(--gold);
+  background: #04040A;
+}
+.phone-input.is-invalid {
+  border-color: var(--red);
+}
+.phone-input .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  padding: 0 12px 0 14px;
+  margin: 0;
+  border-right: 1px solid var(--line-2);
+  gap: 8px;
+}
+.phone-input .PhoneInputCountryIcon {
+  width: 1.5em;
+  height: 1.1em;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
+}
+.phone-input .PhoneInputCountrySelect {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.phone-input .PhoneInputCountrySelectArrow {
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: 6px;
+  border-style: solid;
+  border-color: var(--ink-2);
+  border-top-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 1.2px;
+  border-left-width: 1.2px;
+  opacity: 0.8;
+  transform: rotate(-45deg);
+}
+.phone-input .PhoneInputInput {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+}
+.phone-input .PhoneInputInput::placeholder { color: var(--muted-2); }
+.field-error {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-top: 6px;
 }
 
 /* Full-width form submit variant of .cta-outline. */
@@ -1175,7 +1242,7 @@ footer {
     letter-spacing: .14em;
   }
   .brand-logo--nav { height: 28px; max-height: 28px; }
-  .phone-row { grid-template-columns: 100px 1fr; }
+  .phone-input .PhoneInputInput { font-size: 14px; padding: 12px 14px; }
 }
 
 /* Short viewports (laptops, browser zoomed in) — keep hero content visible

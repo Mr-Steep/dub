@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import PhoneInput, { isValidPhoneNumber, type Value } from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 
 type ImageSlotProps = {
   placeholder?: string;
@@ -42,6 +45,8 @@ function ImageSlot({ placeholder, src }: ImageSlotProps) {
 export default function SpadarHome() {
   const navRef = useRef<HTMLElement | null>(null);
   const [submittedRef, setSubmittedRef] = useState<string | null>(null);
+  const [phone, setPhone] = useState<Value | undefined>();
+  const [phoneError, setPhoneError] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -57,15 +62,18 @@ export default function SpadarHome() {
 
   const onSubmitInquiry = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!phone || !isValidPhoneNumber(phone)) {
+      setPhoneError(true);
+      return;
+    }
+    setPhoneError(false);
     const form = e.currentTarget;
-    const cc = (form.elements.namedItem("cc") as HTMLSelectElement).value;
-    const phone = (form.elements.namedItem("phone") as HTMLInputElement).value.trim();
     const brief = (form.elements.namedItem("brief") as HTMLTextAreaElement).value.trim();
 
     const payload = {
       kind: "inquiry" as const,
       ts: new Date().toISOString(),
-      phone: cc + " " + phone,
+      phone,
       brief,
       ref: "SPDR-" + Math.floor(Math.random() * 9000 + 1000),
     };
@@ -99,7 +107,7 @@ export default function SpadarHome() {
         <div className="wrap nav-inner">
           <a className="brand brand-logo-link" href="#top" aria-label="SPADAR Automotive">
             <Image
-              src="/spadar-logo.png"
+              src="/spadar-logo.webp"
               alt="SPADAR Automotive"
               className="brand-logo brand-logo--nav"
               width={925}
@@ -250,7 +258,7 @@ export default function SpadarHome() {
                   so the map fills the viewBox properly. City pins were placed by
                   programmatic land-detection sampling of this exact PNG. */}
               <g transform="translate(12 -15) scale(0.82)" filter="url(#worldGoldTint)">
-                <image href="/world-map-cropped.png" width="1433" height="709" preserveAspectRatio="xMidYMid meet" />
+                <image href="/world-map-cropped.webp" width="1433" height="709" preserveAspectRatio="xMidYMid meet" />
               </g>
 
               {/* Equator */}
@@ -493,7 +501,7 @@ export default function SpadarHome() {
             playsInline
             preload="auto"
           >
-            <source src="/b.webm" type="video/webm" />
+            <source src="/g.mp4" type="video/webm" />
           </video>
         </div>
 
@@ -568,27 +576,24 @@ export default function SpadarHome() {
               <h3>Submit your number.</h3>
 
               <div className="field">
-                <label htmlFor="phone">Phone — preferred reply</label>
-                <div className="phone-row">
-                  <select id="cc" name="cc" defaultValue="+971">
-                    <option value="+971">+971 AE</option>
-                    <option value="+44">+44 UK</option>
-                    <option value="+1">+1 US</option>
-                    <option value="+33">+33 FR</option>
-                    <option value="+377">+377 MC</option>
-                    <option value="+65">+65 SG</option>
-                    <option value="+81">+81 JP</option>
-                    <option value="+61">+61 AU</option>
-                  </select>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    inputMode="tel"
-                    placeholder="50 000 0000"
-                    required
-                  />
-                </div>
+                <label htmlFor="phone-input">Phone — preferred reply</label>
+                <PhoneInput
+                  id="phone-input"
+                  international
+                  defaultCountry="AE"
+                  flags={flags}
+                  countryCallingCodeEditable={false}
+                  placeholder="50 000 0000"
+                  value={phone}
+                  onChange={(v) => {
+                    setPhone(v);
+                    if (phoneError) setPhoneError(false);
+                  }}
+                  className={`phone-input${phoneError ? " is-invalid" : ""}`}
+                />
+                {phoneError && (
+                  <span className="field-error">Please enter a valid phone number</span>
+                )}
               </div>
 
               <div className="field">
@@ -651,7 +656,7 @@ export default function SpadarHome() {
           <div className="foot-grid">
             <div className="foot-brand">
               <Image
-                src="/spadar-logo.png"
+                src="/spadar-logo.webp"
                 alt="SPADAR Automotive"
                 className="brand-logo brand-logo--foot"
                 width={925}
