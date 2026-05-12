@@ -485,7 +485,16 @@ export default function SpadarHome() {
       {/* ============== VISUAL PROOF ============== */}
       <section className="proof" id="proof">
         <div className="proof-img">
-          <ImageSlot placeholder="Cinematic shot — matte black saloon, private jet tarmac, golden-hour, low-angle, 16:9" />
+          <video
+            className="proof-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
+            <source src="/b.webm" type="video/webm" />
+          </video>
         </div>
 
         <div className="wrap proof-inner">
