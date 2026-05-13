@@ -1,67 +1,116 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import PhoneInput, { isValidPhoneNumber, type Value } from "react-phone-number-input";
-import flags from "react-phone-number-input/flags";
-import "react-phone-number-input/style.css";
+import type { Value as PhoneValue } from "./PhoneField";
 
-type ImageSlotProps = {
-  placeholder?: string;
-  src?: string;
-};
-
-function ImageSlot({ placeholder, src }: ImageSlotProps) {
-  if (src) {
-    return (
-      <div className="image-slot">
-        <img src={src} alt="" />
-      </div>
-    );
-  }
-  return (
-    <div className="image-slot">
-      <div className="image-slot-empty">
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <circle cx="8.5" cy="8.5" r="1.5" />
-          <path d="m21 15-5-5L5 21" />
-        </svg>
-        {placeholder ? <div className="cap">{placeholder}</div> : null}
-      </div>
+const PhoneField = dynamic(() => import("./PhoneField"), {
+  ssr: false,
+  loading: () => (
+    <div className="phone-input phone-input--placeholder" aria-hidden="true">
+      <span className="phone-input__placeholder-flag" />
+      <span className="phone-input__placeholder-input">50 000 0000</span>
     </div>
-  );
-}
+  ),
+});
 
 export default function SpadarHome() {
+  const navSentinelRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+  const proofVideoRef = useRef<HTMLVideoElement | null>(null);
+  const contactRef = useRef<HTMLElement | null>(null);
+  const proofRef = useRef<HTMLElement | null>(null);
   const [submittedRef, setSubmittedRef] = useState<string | null>(null);
-  const [phone, setPhone] = useState<Value | undefined>();
+  const [phone, setPhone] = useState<PhoneValue | undefined>();
   const [phoneError, setPhoneError] = useState(false);
+  const [mountPhone, setMountPhone] = useState(false);
+  const [mountVideos, setMountVideos] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      const nav = navRef.current;
-      if (!nav) return;
-      if (window.scrollY > 12) nav.classList.add("scrolled");
-      else nav.classList.remove("scrolled");
+    const sentinel = navSentinelRef.current;
+    const nav = navRef.current;
+    if (!sentinel || !nav) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) nav.classList.remove("scrolled");
+        else nav.classList.add("scrolled");
+      },
+      { rootMargin: "-12px 0px 0px 0px", threshold: 0 }
+    );
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const reducedData =
+      typeof navigator !== "undefined" &&
+      "connection" in navigator &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((navigator as any).connection?.saveData === true ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        /(^|[^a-z])2g/i.test((navigator as any).connection?.effectiveType ?? ""));
+    if (reducedData) return;
+    if (window.matchMedia("(max-width: 720px), (prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const schedule =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).requestIdleCallback?.bind(window) ??
+      ((cb: () => void) => window.setTimeout(cb, 200));
+    const cancel =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).cancelIdleCallback?.bind(window) ?? window.clearTimeout;
+    const id = schedule(() => setMountVideos(true), { timeout: 1500 });
+    return () => cancel(id);
+  }, []);
+
+  useEffect(() => {
+    if (!mountVideos) return;
+    const observe = (el: Element | null, target: HTMLVideoElement | null) => {
+      if (!el || !target) return null;
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              target.play().catch(() => {});
+            } else {
+              target.pause();
+            }
+          }
+        },
+        { rootMargin: "200px" }
+      );
+      io.observe(el);
+      return io;
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    const observers = [
+      observe(document.getElementById("top"), heroVideoRef.current),
+      observe(proofRef.current, proofVideoRef.current),
+    ];
+    return () => observers.forEach((io) => io?.disconnect());
+  }, [mountVideos]);
+
+  useEffect(() => {
+    const target = contactRef.current;
+    if (!target) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setMountPhone(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    io.observe(target);
+    return () => io.disconnect();
   }, []);
 
   const onSubmitInquiry = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { isValidPhoneNumber } = await import("./PhoneField");
     if (!phone || !isValidPhoneNumber(phone)) {
       setPhoneError(true);
       return;
@@ -79,7 +128,6 @@ export default function SpadarHome() {
     };
 
     // ───── Telegram bot hook ─────
-    // Replace TG_BOT_TOKEN and TG_CHAT_ID below to enable.
     const TG_BOT_TOKEN = "";
     const TG_CHAT_ID = "";
     if (TG_BOT_TOKEN && TG_CHAT_ID) {
@@ -102,6 +150,7 @@ export default function SpadarHome() {
 
   return (
     <>
+      <div ref={navSentinelRef} aria-hidden="true" style={{ position: "absolute", top: 0, height: 1, width: 1 }} />
       {/* ============== NAV ============== */}
       <nav className="nav" id="nav" ref={navRef}>
         <div className="wrap nav-inner">
@@ -113,6 +162,7 @@ export default function SpadarHome() {
               width={925}
               height={175}
               priority
+              sizes="(max-width: 720px) 160px, 232px"
             />
           </a>
           <div className="nav-links">
@@ -141,17 +191,20 @@ export default function SpadarHome() {
         <div className="hero-headlight">
           <div className="slot-wrap">
             <div className="hero-yt">
-              <video
-                className="hero-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-              >
-
-                <source src="/b.webm" type="video/webm" />
-              </video>
+              {mountVideos && (
+                <video
+                  ref={heroVideoRef}
+                  className="hero-video"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  poster=""
+                >
+                  <source src="/b.webm" type="video/webm" />
+                </video>
+              )}
               <div className="hero-yt-veil" />
             </div>
           </div>
@@ -491,18 +544,22 @@ export default function SpadarHome() {
       </section>
 
       {/* ============== VISUAL PROOF ============== */}
-      <section className="proof" id="proof">
+      <section className="proof" id="proof" ref={proofRef}>
         <div className="proof-img">
-          <video
-            className="proof-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-          >
-            <source src="/g.webm" type="video/webm" />
-          </video>
+          {mountVideos && (
+            <video
+              ref={proofVideoRef}
+              className="proof-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster=""
+            >
+              <source src="/g.webm" type="video/webm" />
+            </video>
+          )}
         </div>
 
         <div className="wrap proof-inner">
@@ -536,7 +593,7 @@ export default function SpadarHome() {
       </section>
 
       {/* ============== CONTACT ============== */}
-      <section className="contact" id="contact">
+      <section className="contact" id="contact" ref={contactRef}>
         <div className="wrap">
           <div className="contact-grid">
             <div className="contact-lhs">
@@ -577,20 +634,27 @@ export default function SpadarHome() {
 
               <div className="field">
                 <label htmlFor="phone-input">Phone — preferred reply</label>
-                <PhoneInput
-                  id="phone-input"
-                  international
-                  defaultCountry="AE"
-                  flags={flags}
-                  countryCallingCodeEditable={false}
-                  placeholder="50 000 0000"
-                  value={phone}
-                  onChange={(v) => {
-                    setPhone(v);
-                    if (phoneError) setPhoneError(false);
-                  }}
-                  className={`phone-input${phoneError ? " is-invalid" : ""}`}
-                />
+                {mountPhone ? (
+                  <PhoneField
+                    id="phone-input"
+                    value={phone}
+                    onChange={(v) => {
+                      setPhone(v);
+                      if (phoneError) setPhoneError(false);
+                    }}
+                    invalid={phoneError}
+                  />
+                ) : (
+                  <div
+                    className="phone-input phone-input--placeholder"
+                    onClick={() => setMountPhone(true)}
+                    onFocus={() => setMountPhone(true)}
+                    onMouseEnter={() => setMountPhone(true)}
+                  >
+                    <span className="phone-input__placeholder-flag" />
+                    <span className="phone-input__placeholder-input">50 000 0000</span>
+                  </div>
+                )}
                 {phoneError && (
                   <span className="field-error">Please enter a valid phone number</span>
                 )}
@@ -661,6 +725,8 @@ export default function SpadarHome() {
                 className="brand-logo brand-logo--foot"
                 width={925}
                 height={175}
+                loading="lazy"
+                sizes="(max-width: 720px) 200px, 360px"
               />
               <p>
                 A private vehicle brokerage operating from the DMCC Free Zone, Dubai.

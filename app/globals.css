@@ -19,11 +19,6 @@
   --chrome-2: #B8B5AE;
   --chrome-3: #5B5953;
   --chrome-4: #1C1B19;
-
-  --font-display: 'Saira Condensed', sans-serif;
-  --font-head: 'Archivo', sans-serif;
-  --font-body: 'Manrope', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
 }
 
 * { box-sizing: border-box; }
@@ -279,13 +274,16 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   background: linear-gradient(90deg, transparent 0%, rgba(201, 169, 97, .6) 50%, transparent 100%);
   filter: blur(.4px);
 }
-.streak.s1 { top: 18%; left: -30%; width: 60%; animation: streak 7s 1s linear infinite; }
-.streak.s2 { top: 62%; left: -30%; width: 55%; opacity: .5; animation: streak 9s 3s linear infinite; }
-.streak.s3 { top: 34%; left: -30%; width: 40%; opacity: .7; animation: streak 11s 5s linear infinite; }
+.streak.s1 { top: 18%; left: -30%; width: 60%; animation: streak 7s 1s linear infinite; will-change: transform, opacity; }
+.streak.s2 { top: 62%; left: -30%; width: 55%; opacity: .5; animation: streak 9s 3s linear infinite; will-change: transform, opacity; }
+.streak.s3 { top: 34%; left: -30%; width: 40%; opacity: .7; animation: streak 11s 5s linear infinite; will-change: transform, opacity; }
 @keyframes streak {
   0%   { transform: translateX(0); opacity: 0; }
   8%   { opacity: 1; }
   100% { transform: translateX(220vw); opacity: 0; }
+}
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+  .streaks { display: none; }
 }
 
 .hero-bokeh {
@@ -374,7 +372,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   color: var(--muted);
   pointer-events: none;
   opacity: 0;
-  animation: heroFade .8s ease-out 1.4s forwards;
+  animation: heroFade .5s ease-out .55s forwards;
 }
 @media (max-width: 780px) {
   .hero-coords { right: 24px; bottom: 24px; gap: 4px; }
@@ -392,11 +390,15 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .hero-title .line span {
   display: block;
   transform: translateY(110%);
-  animation: reveal 1s cubic-bezier(.2, .7, .2, 1) forwards;
+  animation: reveal .6s cubic-bezier(.2, .7, .2, 1) forwards;
+  will-change: transform;
 }
-.hero-title .line:nth-child(2) span { animation-delay: .5s; }
-.hero-title .line:nth-child(3) span { animation-delay: 1s; }
+.hero-title .line:nth-child(2) span { animation-delay: .12s; }
+.hero-title .line:nth-child(3) span { animation-delay: .24s; }
 @keyframes reveal { to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-title .line span { transform: none; animation: none; }
+}
 
 .hero-sub {
   margin-top: 32px;
@@ -406,12 +408,12 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   color: var(--ink-2);
   font-weight: 300;
   opacity: 0;
-  animation: heroFade .8s ease-out 1.6s forwards;
+  animation: heroFade .5s ease-out .35s forwards;
 }
 .hero-cta {
   margin-top: 28px;
   opacity: 0;
-  animation: heroFade .8s ease-out 1.9s forwards;
+  animation: heroFade .5s ease-out .5s forwards;
 }
 @keyframes heroFade { to { opacity: 1; } }
 
@@ -891,6 +893,28 @@ section { position: relative; }
   outline: none;
 }
 .phone-input .PhoneInputInput::placeholder { color: var(--muted-2); }
+.phone-input--placeholder {
+  cursor: text;
+  padding: 0 14px;
+  min-height: 47px;
+  color: var(--muted-2);
+}
+.phone-input--placeholder .phone-input__placeholder-flag {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.1em;
+  background: linear-gradient(180deg, #1a1a22 0%, #0c0c14 100%);
+  border: 1px solid rgba(255, 255, 255, .12);
+  margin-right: 12px;
+  align-self: center;
+}
+.phone-input--placeholder .phone-input__placeholder-input {
+  flex: 1;
+  align-self: center;
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 14px 0;
+}
 .field-error {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -1030,8 +1054,9 @@ footer {
   stroke: rgba(201, 169, 97, .22);
   animation: rangeRotate 60s linear infinite;
   transform-origin: center;
+  transform-box: fill-box;
 }
-@keyframes rangeRotate { to { stroke-dashoffset: 200; } }
+@keyframes rangeRotate { to { transform: rotate(360deg); } }
 
 /* Routes — animated golden corridors */
 .route {
@@ -1045,7 +1070,7 @@ footer {
 }
 @keyframes dash { to { stroke-dashoffset: -200; } }
 
-/* City pins — concentric rings + dot, pulse outward */
+/* City pins — concentric rings + dot, pulse outward (transform-composited) */
 .city .city-dot {
   fill: var(--gold);
   filter: drop-shadow(0 0 6px rgba(201, 169, 97, .9));
@@ -1060,11 +1085,14 @@ footer {
   stroke: var(--gold);
   stroke-width: 1.2;
   opacity: .8;
+  transform-origin: center;
+  transform-box: fill-box;
   animation: cityPulse 2.6s ease-out infinite;
+  will-change: transform, opacity;
 }
 @keyframes cityPulse {
-  0%   { r: 3; opacity: .85; stroke-width: 1.4; }
-  100% { r: 22; opacity: 0; stroke-width: 0.4; }
+  0%   { transform: scale(1);    opacity: .85; }
+  100% { transform: scale(7.33); opacity: 0; }
 }
 
 /* Dubai hub — distinguished from cities by white treatment + crosshair */
@@ -1077,7 +1105,10 @@ footer {
   stroke: #fff;
   stroke-width: 1.2;
   opacity: .6;
+  transform-origin: center;
+  transform-box: fill-box;
   animation: hubPulse 2.2s ease-out infinite;
+  will-change: transform, opacity;
 }
 .hub .hub-ring-outer {
   fill: none;
@@ -1090,8 +1121,15 @@ footer {
   stroke-width: 1;
 }
 @keyframes hubPulse {
-  0%   { r: 4; opacity: .9; }
-  100% { r: 26; opacity: 0; }
+  0%   { transform: scale(1);    opacity: .9; }
+  100% { transform: scale(8.67); opacity: 0; }
+}
+
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+  .range-rings circle:nth-child(1),
+  .route,
+  .city .city-pulse,
+  .hub .hub-ring { animation: none; }
 }
 
 /* Map labels */
