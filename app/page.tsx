@@ -175,6 +175,7 @@ export default function SpadarHome() {
         </div>
       </nav>
 
+      <main>
       {/* ============== HERO ============== */}
       <header className="hero" id="top">
         <div className="carbon-bg" />
@@ -201,6 +202,8 @@ export default function SpadarHome() {
                   playsInline
                   preload="none"
                   poster=""
+                  aria-hidden="true"
+                  tabIndex={-1}
                 >
                   <source src="/b.webm" type="video/webm" />
                 </video>
@@ -556,6 +559,8 @@ export default function SpadarHome() {
               playsInline
               preload="none"
               poster=""
+              aria-hidden="true"
+              tabIndex={-1}
             >
               <source src="/g.webm" type="video/webm" />
             </video>
@@ -713,6 +718,7 @@ export default function SpadarHome() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* ============== FOOTER ============== */}
       <footer>
