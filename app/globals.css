@@ -396,7 +396,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .hero-title .line:nth-child(2) span { animation-delay: .12s; }
 .hero-title .line:nth-child(3) span { animation-delay: .24s; }
 @keyframes reveal { to { transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 720px) {
   .hero-title .line span { transform: none; animation: none; }
 }
 
